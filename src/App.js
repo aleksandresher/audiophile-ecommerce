@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Home from "./Pages/Home";
+import { Routes, Route, useLocation } from "react-router-dom";
+import SingleProduct from "./Pages/SingleProduct";
+import Product from "./Pages/Product";
+import UserStore from "./context/Context";
+import { useState, useEffect } from "react";
+import Cart from "./components/Cart";
+import Checkout from "./Pages/Checkout";
 
 function App() {
+  function ScrollToTop() {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+  }
+  const [value, setValue] = useState({
+    id: 1,
+    item: "",
+    category: "",
+  });
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <UserStore.Provider value={{ value, setValue }}>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path={`/${value.id}`} element={<Product />} />
+          <Route path={`/${value.category}`} element={<SingleProduct />} />
+          <Route path="/Cart" element={<Cart />} />
+          <Route path="/Checkout" element={<Checkout />} />
+        </Routes>
+      </UserStore.Provider>
     </div>
   );
 }
